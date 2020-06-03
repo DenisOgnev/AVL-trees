@@ -1,28 +1,31 @@
 #pragma once
 #include <iostream>
 
+template<class Key, class Data>
 struct Node
 {
-	int key;
-	int data;
+	Key key;
+	Data data;
 	unsigned char height;
-	Node* left;
-	Node* right;
-	Node(int k, int d) { key = k; data = d; left = right = nullptr; height = 1; }
+	Node<Key, Data>* left;
+	Node<Key, Data>* right;
+	Node(Key k, Data d) { key = k; data = d; left = right = nullptr; height = 1; }
 };
 
+template<class Key, class Data>
 class AVLtree
 {
-	Node* node;
+	Node<Key, Data>* node;
 public:
-	AVLtree(int k, int d) { node = new Node(k, d); }
-	void insert(int k, int d);
-	void remove(int k);
-	int find(int k);
+	AVLtree(Key k, Data d) { node = new Node<Key, Data>(k, d); }
+	void insert(Key k, Data d);
+	void remove(Key k);
+	int find(Key k);
 	void print();
 };
 
-unsigned char height(Node* p)
+template<class Key, class Data>
+unsigned char height(Node<Key, Data>* p)
 {
 	return p ? p->height : 0;
 	/*if (p)
@@ -31,12 +34,14 @@ unsigned char height(Node* p)
 		return 0;*/
 }
 
-int balanceFactor(Node* p)
+template<class Key, class Data>
+int balanceFactor(Node<Key, Data>* p)
 {
 	return height(p->right) - height(p->left);
 }
 
-void fixHeight(Node* p)
+template<class Key, class Data>
+void fixHeight(Node<Key, Data>* p)
 {
 	unsigned char hLeft = height(p->left);
 	unsigned char hRight = height(p->right);
@@ -47,9 +52,10 @@ void fixHeight(Node* p)
 		p->height = hRight + 1;*/
 }
 
-Node* rotateRight(Node* p)
+template<class Key, class Data>
+Node<Key, Data>* rotateRight(Node<Key, Data>* p)
 {
-	Node* q = p->left;
+	Node<Key, Data>* q = p->left;
 	p->left = q->right;
 	q->right = p;
 	fixHeight(p);
@@ -57,9 +63,10 @@ Node* rotateRight(Node* p)
 	return q;
 }
 
-Node* rotateLeft(Node* q)
+template<class Key, class Data>
+Node<Key, Data>* rotateLeft(Node<Key, Data>* q)
 {
-	Node* p = q->right;
+	Node<Key, Data>* p = q->right;
 	q->right = p->left;
 	p->left = q;
 	fixHeight(q);
@@ -67,7 +74,8 @@ Node* rotateLeft(Node* q)
 	return p;
 }
 
-Node* balance(Node* p)
+template<class Key, class Data>
+Node<Key, Data>* balance(Node<Key, Data>* p)
 {
 	fixHeight(p);
 	if (balanceFactor(p) == 2)
@@ -85,10 +93,11 @@ Node* balance(Node* p)
 	return p;
 }
 
-Node* _insert(Node* p, int k, int d)
+template<class Key, class Data>
+Node<Key, Data>* _insert(Node<Key, Data>* p, Key k, Data d)
 {
 	if (!p)
-		return new Node(k, d);
+		return new Node<Key, Data>(k, d);
 	if (k < p->key)
 		p->left = _insert(p->left, k, d);
 	else
@@ -96,7 +105,8 @@ Node* _insert(Node* p, int k, int d)
 	return balance(p);
 }
 
-Node* findMin(Node* p)
+template<class Key, class Data>
+Node<Key, Data>* findMin(Node<Key, Data>* p)
 {
 	return p->left ? findMin(p->left) : p;
 	/*if (p->left)
@@ -105,7 +115,8 @@ Node* findMin(Node* p)
 		return p;*/
 }
 
-Node* removeMin(Node* p)
+template<class Key, class Data>
+Node<Key, Data>* removeMin(Node<Key, Data>* p)
 {
 	if (p->left == 0)
 		return p->right;
@@ -113,7 +124,8 @@ Node* removeMin(Node* p)
 	return balance(p);
 }
 
-Node* _remove(Node* p, int k)
+template<class Key, class Data>
+Node<Key, Data>* _remove(Node<Key, Data>* p, Key k)
 {
 	if (!p) return 0;
 	if (k < p->key)
@@ -122,11 +134,11 @@ Node* _remove(Node* p, int k)
 		p->right = _remove(p->right, k);
 	else //k == p->key
 	{
-		Node* q = p->left;
-		Node* r = p->right;
+		Node<Key, Data>* q = p->left;
+		Node<Key, Data>* r = p->right;
 		delete p;
 		if (!r) return q;
-		Node* min = findMin(r);
+		Node<Key, Data>* min = findMin(r);
 		min->right = removeMin(r);
 		min->left = q;
 		return balance(min);
@@ -134,21 +146,38 @@ Node* _remove(Node* p, int k)
 	return balance(p);
 }
 
-Node* _find(Node* p, int k)
+template<class Key, class Data>
+Node<Key, Data>* _find(Node<Key, Data>* p, Key k)
 {
+	//if (!p) return 0;
+	//if (!p->left || !p->right) return 0;
+	//if (k < p->key)
+	//	p->left = _find(p->left, k);
+	//else if (k > p->key)
+	//	p->right = _find(p->right, k);
+	//else //k == p->key
+	//{
+	//	return p;
+	//}
+
 	if (!p) return 0;
+	//if (!p->left || !p->right) return 0;
 	if (k < p->key)
-		p->left = _find(p->left, k);
+		if (p->left)
+			Node<Key, Data>* q = _find(p->left, k);
+		else
+			return 0; //throw
 	else if (k > p->key)
-		p->right = _find(p->right, k);
+		if (p->right)
+			Node<Key, Data>* q = _find(p->right, k);
+		else
+			return 0; //throw
 	else //k == p->key
-	{
 		return p;
-	}
-	//return balance(p);
 }
 
-void _print(Node* p)
+template<class Key, class Data>
+void _print(Node<Key, Data>* p)
 {
 	if (!p) return;
 	std::cout << p->key << " | " << p->data << std::endl;
@@ -156,22 +185,28 @@ void _print(Node* p)
 	_print(p->right);
 }
 
-void AVLtree::insert(int k, int d)
+template<class Key, class Data>
+void AVLtree<Key, Data>::insert(Key k, Data d)
 {
 	_insert(node, k, d);
 }
 
-void AVLtree::remove(int k)
+template<class Key, class Data>
+void AVLtree<Key, Data>::remove(Key k)
 {
 	_remove(node, k);
 }
 
-int AVLtree::find(int k)
+template<class Key, class Data>
+int AVLtree<Key, Data>::find(Key k)
 {
+	if (_find(node, k) == 0)
+		return 0; //throw
 	return _find(node, k)->data;
 }
 
-void AVLtree::print()
+template<class Key, class Data>
+void AVLtree<Key, Data>::print()
 {
 	_print(node);
 }

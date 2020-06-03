@@ -1,3 +1,3 @@
 ﻿  Source.cpp
-c:\users\denis\desktop\учеба\программирование\avl-trees\avl-trees\avl-tree.h(149): warning C4715: _find: значение возвращается не при всех путях выполнения
+c:\users\denis\desktop\учеба\программирование\avl-trees\avl-trees\avl-tree.h(177): warning C4715: _find<int,int>: значение возвращается не при всех путях выполнения
   AVL-trees.vcxproj -> C:\Users\denis\Desktop\учеба\программирование\AVL-trees\Debug\AVL-trees.exe

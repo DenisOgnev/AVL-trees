@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 
 template<class Key, class Data>
 struct Node
@@ -20,7 +21,7 @@ public:
 	AVLtree(Key k, Data d) { node = new Node<Key, Data>(k, d); }
 	void insert(Key k, Data d);
 	void remove(Key k);
-	int find(Key k);
+	Data* find(Key k);
 	void print();
 };
 
@@ -100,8 +101,12 @@ Node<Key, Data>* _insert(Node<Key, Data>* p, Key k, Data d)
 		return new Node<Key, Data>(k, d);
 	if (k < p->key)
 		p->left = _insert(p->left, k, d);
-	else
+		//Node<Key, Data>* q = _insert(p->left, k, d);
+	else if (k > p->key)
 		p->right = _insert(p->right, k, d);
+		//Node<Key, Data>* q = _insert(p->right, k, d);
+	else //k == p->key
+		p->data = d;
 	return balance(p);
 }
 
@@ -149,6 +154,7 @@ Node<Key, Data>* _remove(Node<Key, Data>* p, Key k)
 template<class Key, class Data>
 Node<Key, Data>* _find(Node<Key, Data>* p, Key k)
 {
+
 	//if (!p) return 0;
 	//if (!p->left || !p->right) return 0;
 	//if (k < p->key)
@@ -174,6 +180,7 @@ Node<Key, Data>* _find(Node<Key, Data>* p, Key k)
 			return 0; //throw
 	else //k == p->key
 		return p;
+
 }
 
 template<class Key, class Data>
@@ -198,11 +205,11 @@ void AVLtree<Key, Data>::remove(Key k)
 }
 
 template<class Key, class Data>
-int AVLtree<Key, Data>::find(Key k)
+Data* AVLtree<Key, Data>::find(Key k)
 {
 	if (_find(node, k) == 0)
-		return 0; //throw
-	return _find(node, k)->data;
+		return nullptr; //throw
+	return &_find(node, k)->data;
 }
 
 template<class Key, class Data>

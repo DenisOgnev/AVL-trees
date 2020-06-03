@@ -10,25 +10,19 @@ int main()
 	tree.insert(15, 4);
 	tree.insert(7, 8);
 	tree.insert(6, 3);
-
-	tree.print();
-	cout << endl;
-
-	tree.remove(6);
-	cout << tree.find(6) << endl;
-
+	tree.insert(6, 2);
 	cout << tree.find(16) << endl;
-
-	cout << tree.find(15) << endl;
-
-	tree.print();
-	cout << endl;
-	cout << tree.find(4);
-	cout << endl;
 	tree.print();
 	cout << endl;
 
-	cout << tree.find(15) << endl;
+	AVLtree<int, string> strTree(2, "2");
+	strTree.insert(3, "abc");
+	strTree.insert(1, "ddd");
+	cout << strTree.find(4) << endl;
+	cout << *strTree.find(2) << endl;
+	strTree.print();
+	
+	
 
 	system("pause");
 }
